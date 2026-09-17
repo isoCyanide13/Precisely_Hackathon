@@ -1,3 +1,4 @@
+import os
 from typing import List, Union
 from pydantic import AnyHttpUrl, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -24,7 +25,11 @@ class Settings(BaseSettings):
         return v
 
     # Database Configuration
-    DATABASE_URL: str = "sqlite:///./sql_app.db"
+    DATABASE_URL: str = (
+        "sqlite:////tmp/sql_app.db"
+        if os.getenv("VERCEL")
+        else "sqlite:///./sql_app.db"
+    )
 
     model_config = SettingsConfigDict(
         env_file=".env",
